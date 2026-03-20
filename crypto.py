@@ -1,4 +1,4 @@
-import ccxt
+'''import ccxt
 import matplotlib.pyplot as plt
 from collections import deque
 import time
@@ -35,5 +35,81 @@ while True:
     plt.ylabel("Relative Change (Base = 1)")
     plt.legend()
     
+    plt.pause(0.5)
+    time.sleep(2)'''
+
+'''import ccxt
+import plotly.graph_objects as go
+import time
+
+exchange = ccxt.binance()
+
+symbols = ['BTC/USDT', 'ETH/USDT', 'BNB/USDT', 'XRP/USDT', 'ADA/USDT']
+
+base_price = {}
+data = {symbol: [] for symbol in symbols}
+
+fig = go.Figure()
+
+while True:
+    for symbol in symbols:
+        ticker = exchange.fetch_ticker(symbol)
+        price = ticker['last']
+        
+        if symbol not in base_price:
+            base_price[symbol] = price
+        
+        normalized = ((price - base_price[symbol]) / base_price[symbol]) * 100
+        data[symbol].append(normalized)
+    
+    fig = go.Figure()
+    
+    for symbol in symbols:
+        fig.add_trace(go.Scatter(
+            y=data[symbol],
+            mode='lines',
+            name=symbol
+        ))
+    
+    fig.update_layout(
+        title="Live Crypto Performance (%)",
+        xaxis_title="Time",
+        yaxis_title="Percentage Change",
+        template="plotly_dark"   # 🔥 makes it look professional
+    )
+    
+    fig.show()
+    time.sleep(5)'''
+
+import ccxt
+import matplotlib.pyplot as plt
+from collections import deque
+import time
+
+exchange = ccxt.binance()
+
+symbols = ['BTC/USDT', 'ETH/USDT', 'BNB/USDT', 'XRP/USDT', 'ADA/USDT']
+
+data = {symbol: deque(maxlen=100) for symbol in symbols}
+
+plt.ion()
+
+while True:
+    plt.clf()
+    
+    for symbol in symbols:
+        ticker = exchange.fetch_ticker(symbol)
+        price = ticker['last']
+        
+        data[symbol].append(price)
+        
+        plt.plot(list(data[symbol]), label=symbol)
+    
+    plt.title("Live Crypto Prices")
+    plt.xlabel("Time")
+    plt.ylabel("Price (USD)")
+    plt.legend()
+    plt.grid(True)
+    print("hi")
     plt.pause(0.5)
     time.sleep(2)
