@@ -81,7 +81,7 @@ while True:
     fig.show()
     time.sleep(5)'''
 
-import ccxt
+'''import ccxt
 import matplotlib.pyplot as plt
 from collections import deque
 import time
@@ -112,4 +112,51 @@ while True:
     plt.grid(True)
     print("hi")
     plt.pause(0.5)
+    time.sleep(2)'''
+
+import ccxt
+import pandas as pd
+import matplotlib.pyplot as plt
+import time
+
+exchange = ccxt.binance()
+
+symbols = ['BTC/USDT', 'ETH/USDT', 'BNB/USDT', 'XRP/USDT', 'ADA/USDT']
+
+# Create DataFrame
+df = pd.DataFrame()
+
+plt.ion()
+
+while True:
+    row = {}
+
+    for symbol in symbols:
+        ticker = exchange.fetch_ticker(symbol)
+        row[symbol] = ticker['last']
+    
+    # Add timestamp
+    row['time'] = pd.Timestamp.now()
+    
+    df = pd.concat([df, pd.DataFrame([row])])
+    
+    # Keep last 100 points
+    df = df.tail(100)
+
+    plt.clf()
+
+    for symbol in symbols:
+        plt.plot(df['time'], df[symbol], label=symbol)
+
+    plt.title("Crypto Prices - Live")
+    plt.xlabel("Time")
+    plt.ylabel("Price (USD)")
+    plt.legend()
+    plt.grid(True)
+
+    plt.xticks(rotation=45)
+
+    plt.tight_layout()
+    plt.pause(0.5)
+
     time.sleep(2)
