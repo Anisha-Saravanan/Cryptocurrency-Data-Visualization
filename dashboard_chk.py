@@ -1,7 +1,9 @@
 import streamlit as st
+from live_crypto import get_today_coin_plot
+import time
+from streamlit_autorefresh import st_autorefresh
 from normalized_plot import show_normalized
 from duration_plot import show_duration
-
 st.title("Crypto Dashboard 📊")
 
 coins = ['bitcoin', 'ethereum', 'binancecoin', 'cardano', 'solana']
@@ -9,7 +11,7 @@ coins = ['bitcoin', 'ethereum', 'binancecoin', 'cardano', 'solana']
 # Select visualization
 option = st.radio(
     "Choose Visualization",
-    ["Normalized Plot", "Duration Plot"]
+    ["Normalized Plot", "Duration Plot","Live Line Plot"]
 )
 
 # -------------------------
@@ -50,3 +52,25 @@ elif option == "Duration Plot":
     with st.spinner("Loading duration plot..."):
         fig = show_duration(coin, months)
         st.plotly_chart(fig, use_container_width=True)
+
+elif option == "Live Line Plot":
+
+    st.write("Showing today's data (12:00 AM → Now)")
+
+    coin = st.selectbox("Select Coin", coins)
+
+    placeholder = st.empty()
+
+    import time
+
+    run = st.checkbox("Start Live View")
+
+    if run:
+        for i in range(50):
+            fig = get_today_coin_plot(coin)
+            placeholder.plotly_chart(
+                fig,
+                use_container_width=True,
+                key=str(i)   # 🔥 FIX HERE
+            )
+            time.sleep(10)

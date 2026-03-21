@@ -1,44 +1,35 @@
-import ccxt
+from pycoingecko import CoinGeckoAPI
 import plotly.graph_objects as go
 import datetime
-import time
 
-exchange = ccxt.binance()
+cg = CoinGeckoAPI()
 
-symbols = ['BTC/USDT', 'ETH/USDT', 'BNB/USDT', 'ADA/USDT', 'SOL/USDT']
+def get_today_coin_plot(coin):
+    data = cg.get_coin_market_chart_by_id(
+        id=coin,
+        vs_currency='usd',
+        days=1
+    )
 
-fig = go.Figure()
+    prices = data['prices']
 
-price_data = {symbol: [] for symbol in symbols}
-time_data = []
-
-print("Running live crypto tracker... Press Ctrl+C to stop")
-
-while True:
-    current_time = datetime.datetime.now()
-    time_data.append(current_time)
-
-    for symbol in symbols:
-        ticker = exchange.fetch_ticker(symbol)
-        price = ticker['last']
-        price_data[symbol].append(price)
+    dates = [datetime.datetime.fromtimestamp(p[0]/1000) for p in prices]
+    values = [p[1] for p in prices]
 
     fig = go.Figure()
 
-    for symbol in symbols:
-        fig.add_trace(go.Scatter(
-            x=time_data,
-            y=price_data[symbol],
-            mode='lines',
-            name=symbol
-        ))
+    fig.add_trace(go.Scatter(
+        x=dates,
+        y=values,
+        mode='lines',
+        name=coin
+    ))
 
     fig.update_layout(
-        title="Live Crypto Prices (Today)",
+        title=f"{coin.upper()} Price Today (12 AM → Now)",
         xaxis_title="Time",
-        yaxis_title="Price (USDT)",
+        yaxis_title="Price (USD)",
+        hovermode="x unified"
     )
 
-    fig.show()
-
-    time.sleep(5)  # update every 5 seconds
+    return fig
