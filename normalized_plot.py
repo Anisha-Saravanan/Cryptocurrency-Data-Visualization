@@ -2,7 +2,7 @@ import streamlit as st
 from pycoingecko import CoinGeckoAPI
 import plotly.graph_objects as go
 import datetime
-@st.cache_data
+@st.cache_data(ttl=300)  
 def show_normalized(coins, days):
     cg = CoinGeckoAPI()
     fig = go.Figure()

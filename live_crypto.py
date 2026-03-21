@@ -1,15 +1,19 @@
 from pycoingecko import CoinGeckoAPI
+import streamlit as st
 import plotly.graph_objects as go
 import datetime
 
 cg = CoinGeckoAPI()
-
-def get_today_coin_plot(coin):
-    data = cg.get_coin_market_chart_by_id(
+@st.cache_data(ttl=300)
+def get_coin_data(coin, days):
+    cg = CoinGeckoAPI()
+    return cg.get_coin_market_chart_by_id(
         id=coin,
         vs_currency='usd',
-        days=1
+        days=days
     )
+def get_today_coin_plot(coin):
+    data = get_coin_data(coin,1)
 
     prices = data['prices']
 

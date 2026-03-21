@@ -66,11 +66,11 @@ elif option == "Live Line Plot":
     run = st.checkbox("Start Live View")
 
     if run:
-        for i in range(50):
-            fig = get_today_coin_plot(coin)
-            placeholder.plotly_chart(
-                fig,
-                use_container_width=True,
-                key=str(i)   # 🔥 FIX HERE
-            )
-            time.sleep(10)
+        st_autorefresh(interval=10000, key="live_refresh")  # 10 seconds
+
+        fig = get_today_coin_plot(coin)
+
+        placeholder.plotly_chart(
+        fig,
+        use_container_width=True
+        )
