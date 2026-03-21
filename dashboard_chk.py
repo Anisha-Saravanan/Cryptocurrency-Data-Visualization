@@ -8,6 +8,10 @@ from correlation_analysis import correlation_heatmap
 from histogram_analysis import returns_histogram
 from moving_average import moving_average_plot
 from regression_analysis import regression_profit_prediction
+from rsi import rsi_plot
+from bollinger_bands import bollinger_plot
+from volume_analysis import volume_plot
+from candlestick_chart import candlestick_plot
 
 st.set_page_config(page_title="Crypto Dashboard", layout="wide")
 st.title("📊 Crypto Dashboard - All Analyses")
@@ -76,6 +80,28 @@ with st.spinner("Computing correlation heatmap..."):
 
 st.plotly_chart(fig_corr, use_container_width=True)
 
+# -------------------------
+# 11. Candlestick Chart
+# -------------------------
+st.header("Candlestick Chart 🕯️")
+
+coin_candle = st.selectbox(
+    "Select Coin for Candlestick",
+    coins,
+    index=0,
+    key="coin_candle"
+)
+
+months_candle = st.number_input(
+    f"Months for Candlestick ({coin_candle})",
+    min_value=1, max_value=60, value=12,
+    key="candle_months_input"
+)
+
+with st.spinner("Generating Candlestick Chart..."):
+    fig_candle = candlestick_plot(coin_candle, months_candle)
+
+st.plotly_chart(fig_candle, use_container_width=True)
 
 # -------------------------
 # 5. Returns Histogram
@@ -88,9 +114,11 @@ months_hist = st.number_input(
 )
 
 with st.spinner("Computing histogram..."):
-    fig_hist = returns_histogram(coins, months_hist)
+    fig_hist, fig_scatter, stats_df = returns_histogram(coins, months_hist)
 
 st.plotly_chart(fig_hist, use_container_width=True)
+st.plotly_chart(fig_scatter, use_container_width=True)
+st.dataframe(stats_df)
 
 
 # -------------------------
@@ -124,17 +152,66 @@ months_reg = st.number_input(
 )
 
 with st.spinner("Computing regression predictions..."):
-    df_pred = regression_profit_prediction(coins, months_reg)
+    df, fig1, fig2, fig3 = regression_profit_prediction(coins, months_reg)
 
-st.dataframe(df_pred)
-
+st.dataframe(df)
+st.plotly_chart(fig1)
+st.plotly_chart(fig2)
+st.plotly_chart(fig3)
 
 # -------------------------
-# 8. Market Cap Pie Chart
+# 8. RSI Analysis
 # -------------------------
-st.header("Crypto Market Cap Distribution 🥧")
+st.header("RSI Indicator 📉")
 
-with st.spinner("Loading market cap pie chart..."):
-    fig_cat = crypto_category_pie(coins)
+coin_rsi = st.selectbox("Select Coin for RSI", coins, index=0, key="coin_rsi")
 
-st.plotly_chart(fig_cat, use_container_width=True)
+months_rsi = st.number_input(
+    f"Months for RSI ({coin_rsi})",
+    min_value=1, max_value=60, value=12, key="rsi_months_input"
+)
+
+with st.spinner("Calculating RSI..."):
+    fig_rsi = rsi_plot(coin_rsi, months_rsi)
+
+st.plotly_chart(fig_rsi, use_container_width=True)
+
+# -------------------------
+# 9. Bollinger Bands
+# -------------------------
+st.header("Bollinger Bands 🔥")
+
+coin_bb = st.selectbox("Select Coin for Bollinger Bands", coins, index=0, key="coin_bb")
+
+months_bb = st.number_input(
+    f"Months for Bollinger Bands ({coin_bb})",
+    min_value=1, max_value=60, value=12, key="bb_months_input"
+)
+
+window_bb = st.slider(
+    "Bollinger Window (days)", 5, 50, 20, key="bb_window"
+)
+
+with st.spinner("Calculating Bollinger Bands..."):
+    fig_bb = bollinger_plot(coin_bb, months_bb, window_bb)
+
+st.plotly_chart(fig_bb, use_container_width=True)
+
+# -------------------------
+# 10. Volume Analysis
+# -------------------------
+st.header("Volume Analysis 📊")
+
+coin_vol = st.selectbox("Select Coin for Volume", coins, index=0, key="coin_vol")
+
+months_vol = st.number_input(
+    f"Months for Volume ({coin_vol})",
+    min_value=1, max_value=60, value=12, key="vol_months_input"
+)
+
+with st.spinner("Loading Volume Data..."):
+    fig_vol = volume_plot(coin_vol, months_vol)
+
+st.plotly_chart(fig_vol, use_container_width=True)
+
+
