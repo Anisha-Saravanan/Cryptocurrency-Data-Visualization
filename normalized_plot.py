@@ -2,7 +2,10 @@ import streamlit as st
 from pycoingecko import CoinGeckoAPI
 import plotly.graph_objects as go
 import datetime
-@st.cache_data(ttl=300)  
+@st.cache_data(ttl=3600)  # cache for 1 hour
+def get_coin_data(coin, days):
+    cg = CoinGeckoAPI()
+    return cg.get_coin_market_chart_by_id(id=coin, vs_currency='usd', days=days)
 def show_normalized(coins, days):
     cg = CoinGeckoAPI()
     fig = go.Figure()
