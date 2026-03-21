@@ -53,9 +53,9 @@ while True:
     plt.legend()
     plt.grid(True)
     plt.xticks(rotation=45)
-
+    print("hi")
     plt.tight_layout()
     plt.pause(0.5)
 
     # Wait before next update
-    time.sleep(1)
+    time.sleep(2)
