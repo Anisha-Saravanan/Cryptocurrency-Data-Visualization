@@ -53,6 +53,4 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-## Disclaimer
 
-This project is intended for **educational and analytical purposes** and should not be considered financial or investment advice.
