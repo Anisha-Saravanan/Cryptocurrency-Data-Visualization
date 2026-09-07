@@ -36,18 +36,8 @@ Cryptocurrency-Data-Visualization/
 ├── volume_analysis.py
 ├── live_crypto.py
 ├── app.py
-└── requirements.txt
 ```
 
-## Installation
-
-```bash
-git clone https://github.com/Anisha-Saravanan/Cryptocurrency-Data-Visualization.git
-cd Cryptocurrency-Data-Visualization
-pip install -r requirements.txt
-```
-
-## Run
 
 ```bash
 streamlit run app.py
